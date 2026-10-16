@@ -1,0 +1,1 @@
+{"compilerOptions":{"outDir":"out-test","rootDir":".","sourceMap":false},"exclude":["node_modules","out","out-test"],"extends":"./tsconfig.json","include":["src/**/*","test/**/*"]}

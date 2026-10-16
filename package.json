@@ -1,0 +1,321 @@
+{
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onCommand:contextDiet.copyFileAsSkeleton",
+    "onCommand:contextDiet.copySelectionAsSkeleton",
+    "onCommand:contextDiet.copyAsUltraSlim",
+    "onCommand:contextDiet.copyAsDiet",
+    "onCommand:contextDiet.exportToScratchpad",
+    "onCommand:contextDiet.showDashboard",
+    "onCommand:contextDiet.startProxy",
+    "onCommand:contextDiet.stopProxy",
+    "onCommand:contextDiet.toggleProxy",
+    "onCommand:contextDiet.enableTerminalInjection",
+    "onCommand:contextDiet.disableTerminalInjection",
+    "onCommand:contextDiet.toggleSmartCopy",
+    "onCommand:contextDiet.smartCopy",
+    "onCommand:contextDiet.apiCompress",
+    "onCommand:contextDiet.openCompressedPreview"
+  ],
+  "categories": [
+    "Other",
+    "Machine Learning"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "category": "ContextDiet",
+        "command": "contextDiet.copyFileAsSkeleton",
+        "title": "Copy File as Skeleton Payload"
+      },
+      {
+        "category": "ContextDiet",
+        "command": "contextDiet.copySelectionAsSkeleton",
+        "title": "Copy Selection as Skeleton Payload"
+      },
+      {
+        "category": "ContextDiet",
+        "command": "contextDiet.copyAsUltraSlim",
+        "title": "Copy as Ultra-Slim Payload"
+      },
+      {
+        "category": "ContextDiet",
+        "command": "contextDiet.copyAsDiet",
+        "title": "Copy as Diet Payload"
+      },
+      {
+        "category": "ContextDiet",
+        "command": "contextDiet.exportToScratchpad",
+        "title": "Export Active File to Scratchpad"
+      },
+      {
+        "category": "ContextDiet",
+        "command": "contextDiet.showDashboard",
+        "title": "Show Savings Dashboard"
+      },
+      {
+        "category": "ContextDiet",
+        "command": "contextDiet.startProxy",
+        "title": "Start Local Proxy"
+      },
+      {
+        "category": "ContextDiet",
+        "command": "contextDiet.stopProxy",
+        "title": "Stop Local Proxy"
+      },
+      {
+        "category": "ContextDiet",
+        "command": "contextDiet.toggleProxy",
+        "title": "Toggle Local Proxy"
+      },
+      {
+        "command": "contextDiet.enableTerminalInjection",
+        "title": "Enable Terminal Env Injection",
+        "category": "ContextDiet"
+      },
+      {
+        "command": "contextDiet.disableTerminalInjection",
+        "title": "Disable Terminal Env Injection",
+        "category": "ContextDiet"
+      },
+      {
+        "command": "contextDiet.toggleSmartCopy",
+        "title": "Toggle Smart Copy",
+        "category": "ContextDiet"
+      },
+      {
+        "command": "contextDiet.smartCopy",
+        "title": "Smart Copy (Compressed)",
+        "category": "ContextDiet"
+      },
+      {
+        "command": "contextDiet.apiCompress",
+        "title": "API: Compress Code (for other extensions)",
+        "category": "ContextDiet"
+      },
+      {
+        "command": "contextDiet.openCompressedPreview",
+        "title": "Open Compressed Preview",
+        "category": "ContextDiet"
+      }
+    ],
+    "configuration": {
+      "properties": {
+        "contextDiet.defaultCompressionLevel": {
+          "default": "skeleton",
+          "description": "Default compression level used for context menu copy and proxy compression.",
+          "enum": [
+            "diet",
+            "skeleton",
+            "ultra-slim"
+          ],
+          "type": "string"
+        },
+        "contextDiet.enableLocalProxy": {
+          "default": true,
+          "description": "Enable local HTTP proxy server on port 8765 for CLI agents and API intercept.",
+          "type": "boolean"
+        },
+        "contextDiet.proxyPort": {
+          "default": 8765,
+          "description": "Port number for the local HTTP proxy interceptor server.",
+          "type": "number"
+        },
+        "contextDiet.stripComments": {
+          "default": true,
+          "description": "Remove developer comments and JSDoc blocks.",
+          "type": "boolean"
+        },
+        "contextDiet.stripLogs": {
+          "default": true,
+          "description": "Remove logging calls (console.log, console.debug, console.trace).",
+          "type": "boolean"
+        },
+        "contextDiet.targetModelPricing": {
+          "default": "claude-3-5-sonnet",
+          "description": "Model pricing tier used to estimate dollar savings in the dashboard.",
+          "enum": [
+            "claude-3-5-sonnet",
+            "gpt-4o",
+            "gemini-1-5-pro"
+          ],
+          "type": "string"
+        },
+        "contextDiet.autoInjectTerminalEnv": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically inject OPENAI_BASE_URL (…/v1) and ANTHROPIC_BASE_URL (no /v1) into integrated terminals so CLI agents route through ContextDiet's local proxy with zero manual setup. Applies to newly opened terminals."
+        },
+        "contextDiet.enableSmartCopy": {
+          "type": "boolean",
+          "default": false,
+          "description": "Smart Copy: when on, Ctrl/Cmd+C in a TypeScript/JavaScript editor copies the compressed selection instead of the raw text. Falls back to normal copy whenever compression would not help."
+        }
+      },
+      "title": "ContextDiet"
+    },
+    "languageModelTools": [
+      {
+        "canBeReferencedInPrompt": true,
+        "displayName": "ContextDiet Compress",
+        "inputSchema": {
+          "properties": {
+            "code": {
+              "description": "The TypeScript or JavaScript source code to compress.",
+              "type": "string"
+            },
+            "level": {
+              "description": "Compression level. Defaults to skeleton.",
+              "enum": [
+                "diet",
+                "skeleton",
+                "ultra-slim"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "code"
+          ],
+          "type": "object"
+        },
+        "modelDescription": "Compresses TypeScript/JavaScript source code by stripping comments, debug logging, unused imports and internal function bodies (depending on level: diet, skeleton, ultra-slim). Returns the compressed code plus token savings. Use this to shrink large TS/JS files before reasoning over them.",
+        "name": "contextdiet_compress",
+        "toolReferenceName": "diet",
+        "userDescription": "Compress TypeScript/JavaScript code with ContextDiet before using it as context."
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "contextDiet.copyFileAsSkeleton",
+          "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact"
+        },
+        {
+          "command": "contextDiet.copySelectionAsSkeleton",
+          "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact"
+        },
+        {
+          "command": "contextDiet.copyAsUltraSlim",
+          "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact"
+        },
+        {
+          "command": "contextDiet.copyAsDiet",
+          "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact"
+        },
+        {
+          "command": "contextDiet.apiCompress",
+          "when": "never"
+        },
+        {
+          "command": "contextDiet.smartCopy",
+          "when": "never"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "contextDiet.copySelectionAsSkeleton",
+          "group": "contextDiet@1",
+          "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact"
+        },
+        {
+          "command": "contextDiet.copyFileAsSkeleton",
+          "group": "contextDiet@2",
+          "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact"
+        },
+        {
+          "command": "contextDiet.copyAsUltraSlim",
+          "group": "contextDiet@3",
+          "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact"
+        },
+        {
+          "command": "contextDiet.copyAsDiet",
+          "group": "contextDiet@4",
+          "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact"
+        },
+        {
+          "command": "contextDiet.openCompressedPreview",
+          "group": "contextDiet@5",
+          "when": "editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "contextDiet.copyFileAsSkeleton",
+          "group": "contextDiet@1",
+          "when": "resourceLangId == typescript || resourceLangId == typescriptreact || resourceLangId == javascript || resourceLangId == javascriptreact"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "contextDiet.copyFileAsSkeleton",
+          "group": "contextDiet@1",
+          "when": "resourceLangId == typescript || resourceLangId == typescriptreact || resourceLangId == javascript || resourceLangId == javascriptreact"
+        },
+        {
+          "command": "contextDiet.copyAsUltraSlim",
+          "group": "contextDiet@2",
+          "when": "resourceLangId == typescript || resourceLangId == typescriptreact || resourceLangId == javascript || resourceLangId == javascriptreact"
+        },
+        {
+          "command": "contextDiet.exportToScratchpad",
+          "group": "contextDiet@3",
+          "when": "resourceLangId == typescript || resourceLangId == typescriptreact || resourceLangId == javascript || resourceLangId == javascriptreact"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "contextDiet.smartCopy",
+        "key": "ctrl+c",
+        "mac": "cmd+c",
+        "when": "editorTextFocus && editorHasSelection && contextDiet.smartCopyEnabled && (editorLangId == typescript || editorLangId == typescriptreact || editorLangId == javascript || editorLangId == javascriptreact)"
+      }
+    ]
+  },
+  "dependencies": {
+    "@babel/generator": "^7.26.5",
+    "@babel/parser": "^7.26.5",
+    "@babel/traverse": "^7.26.5",
+    "@babel/types": "^7.26.5",
+    "gpt-tokenizer": "^2.8.1"
+  },
+  "description": "AST-driven code compression for AI context: strip comments, logs, unused imports and internal bodies from TS/JS before it hits the prompt. 50-70% fewer tokens, 100% local.",
+  "devDependencies": {
+    "@types/babel__generator": "^7.6.8",
+    "@types/babel__traverse": "^7.20.6",
+    "@types/node": "^22.10.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.1",
+    "typescript": "^5.7.2"
+  },
+  "displayName": "ContextDiet",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "keywords": [
+    "ai",
+    "tokens",
+    "context",
+    "compression",
+    "ast",
+    "typescript",
+    "claude",
+    "copilot"
+  ],
+  "license": "MIT",
+  "main": "./out/extension.js",
+  "name": "context-diet",
+  "publisher": "contextdiet",
+  "scripts": {
+    "compile": "tsc -p ./",
+    "package": "vsce package --allow-missing-repository",
+    "test": "tsc -p tsconfig.test.json && node --test out-test/test/*.test.js",
+    "vscode:prepublish": "npm run compile",
+    "watch": "tsc -watch -p ./"
+  },
+  "version": "0.1.0"
+}

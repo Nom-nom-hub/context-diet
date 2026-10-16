@@ -1,0 +1,1 @@
+{"configurations":[{"args":["--extensionDevelopmentPath=${workspaceFolder}"],"name":"Run ContextDiet Extension","outFiles":["${workspaceFolder}/out/**/*.js"],"preLaunchTask":"npm: compile","request":"launch","type":"extensionHost"}],"version":"0.2.0"}
